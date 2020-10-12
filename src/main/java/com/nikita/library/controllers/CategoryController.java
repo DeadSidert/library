@@ -2,6 +2,8 @@ package com.nikita.library.controllers;
 
 import com.nikita.library.entity.Category;
 import com.nikita.library.repo.CategoryRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,14 +23,38 @@ public class CategoryController {
 
     @GetMapping("/get")
     public List<Category> getCategory(){
+
         List<Category> categories = categoryRepository.findAll();
         System.out.println("list:" + categories);
         return categories;
+
     }
 
 
     @PostMapping("/add")
-    public Category addCategory(@RequestBody Category category){
-        return categoryRepository.save(category);
+    public ResponseEntity<Category> addCategory(@RequestBody Category category){
+
+        if (category.getId() != null || category.getId() != 0){
+            return new ResponseEntity("ID передавать не нужно", HttpStatus.NOT_ACCEPTABLE);
+        }
+        if (category.getTitle() == null || category.getTitle().trim().length() == 0){
+            return new ResponseEntity("Название обязательно", HttpStatus.NOT_ACCEPTABLE);
+        }
+
+        return ResponseEntity.ok(categoryRepository.save(category));
     }
+
+    @PutMapping("/update")
+    public ResponseEntity<Category> update(@RequestBody Category category){
+
+        if (category.getId() == null || category.getId() == 0){
+            return new ResponseEntity("ID передавать нужно", HttpStatus.NOT_ACCEPTABLE);
+        }
+        if (category.getTitle() == null || category.getTitle().trim().length() == 0){
+            return new ResponseEntity("Название обязательно", HttpStatus.NOT_ACCEPTABLE);
+        }
+
+        return ResponseEntity.ok(categoryRepository.save(category));
+    }
+
 }
