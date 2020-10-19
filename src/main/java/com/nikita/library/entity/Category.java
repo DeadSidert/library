@@ -1,17 +1,14 @@
 package com.nikita.library.entity;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.Collection;
 
+@Entity
 public class Category {
     private Long id;
     private String title;
     private Long completedCount;
     private Long uncompletedCount;
-    private Collection<Task> tasksById;
 
     @Id
     @Column(name = "id", table = "category", nullable = false)
@@ -26,21 +23,16 @@ public class Category {
     }
 
     @Basic
-    @Column(name = "completed_count", table = "category", nullable = true)
+    @Column(name = "completed_count", table = "category")
     public Long getCompletedCount() {
         return completedCount;
     }
 
     @Basic
-    @Column(name = "uncompleted_count", table = "category", nullable = true)
+    @Column(name = "uncompleted_count", table = "category")
     public Long getUncompletedCount() {
         return uncompletedCount;
     }
 
-
-    @OneToMany(mappedBy = "categoryByCategoryId")
-    public Collection<Task> getTasksById() {
-        return tasksById;
-    }
 
 }

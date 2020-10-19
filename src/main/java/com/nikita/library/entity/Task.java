@@ -3,6 +3,7 @@ package com.nikita.library.entity;
 import javax.persistence.*;
 import java.sql.Timestamp;
 
+@Entity
 public class Task {
     private Long id;
     private String title;
@@ -26,25 +27,25 @@ public class Task {
     }
 
     @Basic
-    @Column(name = "completed", table = "task", nullable = true)
+    @Column(name = "completed", table = "task")
     public Integer getCompleted() {
         return completed;
     }
 
     @Basic
-    @Column(name = "date", table = "task", nullable = true)
+    @Column(name = "date", table = "task")
     public Timestamp getDate() {
         return date;
     }
 
     @Basic
-    @Column(name = "priority_id", table = "task", nullable = true)
+    @Column(name = "priority_id", table = "task")
     public Long getPriorityId() {
         return priorityId;
     }
 
     @Basic
-    @Column(name = "category_id", table = "task", nullable = true)
+    @Column(name = "category_id", table = "task")
     public Long getCategoryId() {
         return categoryId;
     }

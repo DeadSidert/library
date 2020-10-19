@@ -2,6 +2,8 @@ package com.nikita.library.controllers;
 
 import com.nikita.library.entity.Category;
 import com.nikita.library.repo.CategoryRepository;
+import com.nikita.library.search.CategorySearchValues;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -54,7 +56,22 @@ public class CategoryController {
             return new ResponseEntity("Название обязательно", HttpStatus.NOT_ACCEPTABLE);
         }
 
-        return ResponseEntity.ok(categoryRepository.save(category));
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity deleteById(@PathVariable Long id){
+        try {
+            categoryRepository.deleteById(id);
+        }catch (EmptyResultDataAccessException e ){
+            return new ResponseEntity("id " + id + " не найден", HttpStatus.NOT_ACCEPTABLE);
+        }
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<List<Category>> search(@RequestBody CategorySearchValues categorySearchValues){
+        return ResponseEntity.ok(categoryRepository.findByTitle(categorySearchValues.getText()));
     }
 
 }
