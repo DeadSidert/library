@@ -1,7 +1,7 @@
 package com.nikita.library.controllers;
 
 import com.nikita.library.entity.Stat;
-import com.nikita.library.repo.StatRepository;
+import com.nikita.library.service.StatService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,18 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/stat")
 public class StatController {
 
-    private StatRepository statRepository;
-
-    public StatController(StatRepository statRepository) {
-        this.statRepository = statRepository;
-    }
-
-    public StatController() {
-    }
+    private StatService statService;
 
     @GetMapping("/find_one")
     public ResponseEntity<Stat> findByOne(){
-        Long id = 1L;
-        return ResponseEntity.ok(statRepository.findById(id).get());
+        return ResponseEntity.ok(statService.findByOne());
     }
 }

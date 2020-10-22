@@ -1,8 +1,8 @@
 package com.nikita.library.controllers;
 
 import com.nikita.library.entity.Priority;
-import com.nikita.library.repo.PriorityRepository;
 import com.nikita.library.search.PrioritySearchValues;
+import com.nikita.library.service.PriorityService;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,17 +14,11 @@ import java.util.List;
 @RequestMapping("/priority")
 public class PriorityController {
 
-    private PriorityRepository priorityRepository;
-
-    public PriorityController(PriorityRepository priorityRepository) {
-        this.priorityRepository = priorityRepository;
-    }
-    public PriorityController() {
-    }
+    private PriorityService priorityService;
 
     @GetMapping("/get")
     public List<Priority> getPriority(){
-        List<Priority> priorities = priorityRepository.findAll();
+        List<Priority> priorities = priorityService.getPriority();
         System.out.println("list:" + priorities);
         return priorities;
     }
@@ -38,7 +32,7 @@ public class PriorityController {
             return new ResponseEntity("Название обязательно", HttpStatus.NOT_ACCEPTABLE);
         }
 
-        return ResponseEntity.ok(priorityRepository.save(priority));
+        return ResponseEntity.ok(priorityService.addPriority(priority));
     }
 
     @PutMapping("/update")
@@ -50,14 +44,14 @@ public class PriorityController {
         if (priority.getTitle() == null || priority.getTitle().trim().length() == 0){
             return new ResponseEntity("Название обязательно", HttpStatus.NOT_ACCEPTABLE);
         }
-
+        priorityService.update(priority);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity deleteById(@PathVariable Long id){
         try {
-            priorityRepository.deleteById(id);
+            priorityService.deleteById(id);
         }catch (EmptyResultDataAccessException e ){
             return new ResponseEntity("id " + id + " не найден", HttpStatus.NOT_ACCEPTABLE);
         }
@@ -66,6 +60,6 @@ public class PriorityController {
 
     @PostMapping("/search")
     public ResponseEntity<List<Priority>> search(@RequestBody PrioritySearchValues prioritySearchValues){
-        return ResponseEntity.ok(priorityRepository.findByTitle(prioritySearchValues.getText()));
+        return ResponseEntity.ok(priorityService.search(prioritySearchValues));
     }
 }

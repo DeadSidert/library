@@ -12,8 +12,14 @@ import lombok.Setter;
 public class TaskSearchValues {
 
     private String text;
-    private int completed;
+    private Integer completed;
     private Long priorityId;
     private Long categoryId;
+
+    private Integer pageNumber;
+    private Integer pageSize;
+
+    private String sortColumn;
+    private String sortDirection;
 
 }

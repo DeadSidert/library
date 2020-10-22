@@ -1,9 +1,12 @@
 package com.nikita.library.controllers;
 
-import com.nikita.library.entity.Priority;
 import com.nikita.library.entity.Task;
-import com.nikita.library.repo.TaskRepository;
+import com.nikita.library.search.TaskSearchValues;
+import com.nikita.library.service.TaskService;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,20 +17,14 @@ import java.util.List;
 @RequestMapping("/task")
 public class TaskController {
 
-    private TaskRepository taskRepository;
+    private TaskService taskService;
 
-    public TaskController(TaskRepository taskRepository) {
-        this.taskRepository = taskRepository;
-    }
-
-    public TaskController() {
-    }
 
     @GetMapping("/get")
-    public List<Task> getTask(){
-        List<Task> tasks = taskRepository.findAll();
+    public ResponseEntity<List<Task>> getTask(){
+        List<Task> tasks = taskService.getTask();
         System.out.println("list:" + tasks);
-        return tasks;
+        return ResponseEntity.ok(tasks);
     }
 
     @PostMapping("/add")
@@ -40,7 +37,7 @@ public class TaskController {
             return new ResponseEntity("Название обязательно", HttpStatus.NOT_ACCEPTABLE);
         }
 
-        return ResponseEntity.ok(taskRepository.save(task));
+        return ResponseEntity.ok(taskService.save(task));
     }
 
     @PutMapping("/update")
@@ -52,6 +49,7 @@ public class TaskController {
         if (task.getTitle() == null || task.getTitle().trim().length() == 0){
             return new ResponseEntity("Название обязательно", HttpStatus.NOT_ACCEPTABLE);
         }
+        taskService.update(task);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -59,10 +57,16 @@ public class TaskController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity deleteById(@PathVariable Long id){
         try {
-            taskRepository.deleteById(id);
+            taskService.deleteById(id);
         }catch (EmptyResultDataAccessException e ){
             return new ResponseEntity("id " + id + " не найден", HttpStatus.NOT_ACCEPTABLE);
         }
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+
+    @GetMapping("/search")
+    public ResponseEntity<Page<Task>> search(@RequestBody TaskSearchValues taskSearchValues){
+        return ResponseEntity.ok(taskService.search(taskSearchValues));
     }
 }

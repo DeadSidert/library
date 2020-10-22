@@ -11,8 +11,6 @@ public class Task {
     private Timestamp date;
     private Long priorityId;
     private Long categoryId;
-    private Priority priorityByPriorityId;
-    private Category categoryByCategoryId;
 
     @Id
     @Column(name = "id", table = "task", nullable = false)
